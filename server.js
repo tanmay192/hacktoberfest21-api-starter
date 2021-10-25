@@ -4,10 +4,11 @@ const express = require("express"),
 	path = require("path"),
 	cors = require("cors"),
 	multer = require("multer"),
-	upload = multer(),
-	app = express(),
-	PORT = process.env.PORT || 8080,
-	NODE_ENV = process.env.NODE_ENV || "development";
+	db = require("./db");
+(upload = multer()),
+	(app = express()),
+	(PORT = process.env.PORT || 3020),
+	(NODE_ENV = process.env.NODE_ENV || "development");
 
 app.set("port", PORT);
 app.set("env", NODE_ENV);
@@ -32,7 +33,6 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 require("./routes")(app);
-
 // catch 404
 app.use((req, res, next) => {
 	// log.error(`Error 404 on ${req.url}.`);

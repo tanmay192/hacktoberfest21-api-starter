@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require("uuid");
+const Contestant = require("../models/contestant.model");
 module.exports = {
 	/**
   * 
@@ -49,31 +51,29 @@ module.exports = {
 
   */
 	createContestant: async (options) => {
-		// Implement your business logic here...
-		//
-		// Return all 2xx and 4xx as follows:
-		//
-		// return {
-		//   status: 'statusCode',
-		//   data: 'response'
-		// }
+		const id = uuidv4().toString();
+		const { city, costumeImgUrl, costumeTitle, country, name } =
+			options.createContestantInlineReqJson;
 
-		// If an error happens during your business logic implementation,
-		// you can throw it as follows:
-		//
-		// throw new Error('<Error message>'); // this will result in a 500
+		if (!city || !costumeImgUrl || !costumeTitle || !country || !name) {
+			throw new Error("Bad Request");
+		}
+
+		const contestant = new Contestant({
+			id: id,
+			...options.createContestantInlineReqJson,
+		});
+
+		const result = await contestant.save((err) => {
+			if (err) throw new Error("User not created");
+			else console.log("User created successfully");
+		});
 
 		var data = {
-				city: options.createContestantInlineReqJson.city,
-				costumeImgUrl:
-					options.createContestantInlineReqJson.costumeImgUrl,
-				costumeTitle:
-					options.createContestantInlineReqJson.costumeTitle,
-				country: options.createContestantInlineReqJson.country,
-				name: options.createContestantInlineReqJson.name,
-				votes: 0,
+				id: id,
+				status: "OK",
 			},
-			status = "200";
+			status = "201";
 
 		return {
 			status: status,
