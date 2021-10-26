@@ -7,31 +7,10 @@ module.exports = {
 
   */
 	getContestants: async (options) => {
-		// Implement your business logic here...
-		//
-		// Return all 2xx and 4xx as follows:
-		//
-		// return {
-		//   status: 'statusCode',
-		//   data: 'response'
-		// }
+		const contestants = await Contestant.find();
 
-		// If an error happens during your business logic implementation,
-		// you can throw it as follows:
-		//
-		// throw new Error('<Error message>'); // this will result in a 500
-
-		var data = [
-				{
-					city: "<string>",
-					costumeImgUrl: "<string>",
-					costumeTitle: "<string>",
-					country: "<string>",
-					id: "<string>",
-					name: "<string>",
-					votes: "<number>",
-				},
-			],
+		// console.log(contestants);
+		var data = [...contestants],
 			status = "200";
 
 		return {
@@ -56,7 +35,13 @@ module.exports = {
 			options.createContestantInlineReqJson;
 
 		if (!city || !costumeImgUrl || !costumeTitle || !country || !name) {
-			throw new Error("Bad Request");
+			return {
+				status: 400,
+				data: {
+					message: "Missing body parameter",
+					status: "Bad Request",
+				},
+			};
 		}
 
 		const contestant = new Contestant({
@@ -65,7 +50,7 @@ module.exports = {
 		});
 
 		const result = await contestant.save((err) => {
-			if (err) throw new Error("User not created");
+			if (err) throw new Error("User not created. Internal Server Error");
 			else console.log("User created successfully");
 		});
 
@@ -87,28 +72,27 @@ module.exports = {
 
   */
 	getContestant: async (options) => {
-		// Implement your business logic here...
-		//
-		// Return all 2xx and 4xx as follows:
-		//
-		// return {
-		//   status: 'statusCode',
-		//   data: 'response'
-		// }
+		const contestant = await Contestant.findOne({ id: options.id });
 
-		// If an error happens during your business logic implementation,
-		// you can throw it as follows:
-		//
-		// throw new Error('<Error message>'); // this will result in a 500
+		if (!contestant) {
+			return {
+				status: 404,
+				data: {
+					message: "Contestant Not Found",
+					status: "Not Found",
+				},
+			};
+		}
 
+		// console.log(contestant);
 		var data = {
-				city: "<string>",
-				costumeImgUrl: "<string>",
-				costumeTitle: "<string>",
-				country: "<string>",
-				id: "<string>",
-				name: "<string>",
-				votes: "<number>",
+				id: contestant.id,
+				name: contestant.name,
+				costumeTitle: contestant.costumeTitle,
+				costumeImgUrl: contestant.costumeImgUrl,
+				city: contestant.city,
+				country: contestant.country,
+				votes: contestant.votes,
 			},
 			status = "200";
 
