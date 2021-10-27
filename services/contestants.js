@@ -34,6 +34,7 @@ module.exports = {
 		const { city, costumeImgUrl, costumeTitle, country, name } =
 			options.createContestantInlineReqJson;
 
+		// Input validation
 		if (!city || !costumeImgUrl || !costumeTitle || !country || !name) {
 			return {
 				status: 400,
@@ -56,7 +57,7 @@ module.exports = {
 
 		var data = {
 				id: id,
-				status: "OK",
+				status: "ok",
 			},
 			status = "201";
 
@@ -74,12 +75,13 @@ module.exports = {
 	getContestant: async (options) => {
 		const contestant = await Contestant.findOne({ id: options.id });
 
+		// If id not found
 		if (!contestant) {
 			return {
 				status: 404,
 				data: {
 					message: "Contestant Not Found",
-					status: "Not Found",
+					status: "error",
 				},
 			};
 		}
@@ -108,22 +110,23 @@ module.exports = {
 
   */
 	deleteContestant: async (options) => {
-		// Implement your business logic here...
-		//
-		// Return all 2xx and 4xx as follows:
-		//
-		// return {
-		//   status: 'statusCode',
-		//   data: 'response'
-		// }
+		const contestant = await Contestant.findOne({ id: options.id });
 
-		// If an error happens during your business logic implementation,
-		// you can throw it as follows:
-		//
-		// throw new Error('<Error message>'); // this will result in a 500
+		// If id not found
+		if (!contestant) {
+			return {
+				status: 404,
+				data: {
+					message: "Contestant Not Found",
+					status: "Not Found",
+				},
+			};
+		}
+
+		const result = await Contestant.deleteOne({ id: options.id });
 
 		var data = {
-				status: "<string>",
+				status: "ok",
 			},
 			status = "200";
 
@@ -136,25 +139,29 @@ module.exports = {
 	/**
   * 
   * @param options.id the id of a contestant 
+  * @param options.name the new name for the contestant
 
   */
 	updateContestant: async (options) => {
-		// Implement your business logic here...
-		//
-		// Return all 2xx and 4xx as follows:
-		//
-		// return {
-		//   status: 'statusCode',
-		//   data: 'response'
-		// }
+		const contestant = await Contestant.findOne({ id: options.id });
 
-		// If an error happens during your business logic implementation,
-		// you can throw it as follows:
-		//
-		// throw new Error('<Error message>'); // this will result in a 500
+		// If id not found
+		if (!contestant) {
+			return {
+				status: 404,
+				data: {
+					message: "Contestant Not Found",
+					status: "Not Found",
+				},
+			};
+		}
+		const result = await Contestant.updateOne(
+			{ id: options.id },
+			{ $set: { name: options.name } }
+		);
 
 		var data = {
-				status: "<string>",
+				status: "ok",
 			},
 			status = "200";
 
@@ -170,23 +177,27 @@ module.exports = {
 
   */
 	upvoteContestant: async (options) => {
-		// Implement your business logic here...
-		//
-		// Return all 2xx and 4xx as follows:
-		//
-		// return {
-		//   status: 'statusCode',
-		//   data: 'response'
-		// }
+		const contestant = await Contestant.findOne({ id: options.id });
 
-		// If an error happens during your business logic implementation,
-		// you can throw it as follows:
-		//
-		// throw new Error('<Error message>'); // this will result in a 500
+		// If id not found
+		if (!contestant) {
+			return {
+				status: 404,
+				data: {
+					message: "Contestant Not Found",
+					status: "Not Found",
+				},
+			};
+		}
+
+		const result = await Contestant.updateOne(
+			{ id: options.id },
+			{ $inc: { votes: 1 } }
+		);
 
 		var data = {
-				status: "<string>",
-				votes: "<number>",
+				status: "ok",
+				votes: contestant.votes + 1,
 			},
 			status = "200";
 

@@ -63,6 +63,7 @@ router.delete("/:id", async (req, res, next) => {
 router.patch("/:id", async (req, res, next) => {
 	let options = {
 		id: req.params.id,
+		name: req.body.name,
 	};
 
 	try {
